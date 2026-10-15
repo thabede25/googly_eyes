@@ -1,0 +1,8 @@
+{
+  "name": "Bluey - Googly Eyes Desktop & Phone Companion",
+  "description": "A blueberry character who lives under your screen and points at things with his own cursor, answers questions, and records meeting notes.",
+  "capabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ],
+  "permissions": []
+}
