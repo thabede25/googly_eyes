@@ -14,8 +14,11 @@ import {
   Sparkles,
   Volume2,
   FolderOpen,
-  ShieldCheck
+  ShieldCheck,
+  BookOpen,
+  Download
 } from 'lucide-react';
+import { InstallGuideModal } from './components/InstallGuideModal';
 
 export function App() {
   // Mode: dual (Desktop + Phone), phone-only, desktop-only
@@ -42,6 +45,7 @@ export function App() {
   // Drawers / Modals
   const [isSessionsOpen, setIsSessionsOpen] = useState<boolean>(false);
   const [isGuardrailsOpen, setIsGuardrailsOpen] = useState<boolean>(false);
+  const [isInstallGuideOpen, setIsInstallGuideOpen] = useState<boolean>(false);
   const [isRecordingSession, setIsRecordingSession] = useState<boolean>(false);
 
   // Mock sessions
@@ -248,6 +252,19 @@ export function App() {
             </button>
           </div>
 
+          {/* Install Guide button */}
+          <button
+            onClick={() => {
+              setIsInstallGuideOpen(true);
+              playChirp('chirp');
+            }}
+            className="px-2.5 py-1.5 rounded-xl bg-gradient-to-r from-[#6C86F5]/20 to-[#A9BCFF]/20 hover:from-[#6C86F5]/30 hover:to-[#A9BCFF]/30 border border-[#6C86F5]/40 text-[#A9BCFF] transition text-xs font-semibold flex items-center gap-1.5 shadow-sm"
+            title="Installation Guide"
+          >
+            <BookOpen className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">Install Guide</span>
+          </button>
+
           {/* Sessions & Guardrails quick buttons */}
           <button
             onClick={() => setIsSessionsOpen(true)}
@@ -291,6 +308,7 @@ export function App() {
                 onPointAtSpot={onPointAtSpot}
                 phonePlacement={phonePlacement}
                 setPhonePlacement={setPhonePlacement}
+                onOpenInstallGuide={() => setIsInstallGuideOpen(true)}
               />
             ) : (
               <MacDesktopSimulation
@@ -340,6 +358,7 @@ export function App() {
               isPaired={true}
               isRecordingSession={isRecordingSession}
               onToggleSessionRecording={handleToggleSessionRecording}
+              onOpenInstallGuide={() => setIsInstallGuideOpen(true)}
             />
           </div>
         )}
@@ -362,6 +381,12 @@ export function App() {
         setAllowControl={setAllowComputerControl}
         actions={actions}
         onEmergencyStop={handleEmergencyStop}
+      />
+
+      {/* Installation Guide Modal */}
+      <InstallGuideModal
+        isOpen={isInstallGuideOpen}
+        onClose={() => setIsInstallGuideOpen(false)}
       />
     </div>
   );

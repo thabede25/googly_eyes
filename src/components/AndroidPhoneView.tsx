@@ -33,6 +33,7 @@ interface AndroidPhoneViewProps {
   isPaired: boolean;
   isRecordingSession: boolean;
   onToggleSessionRecording: () => void;
+  onOpenInstallGuide?: () => void;
 }
 
 export const AndroidPhoneView: React.FC<AndroidPhoneViewProps> = ({
@@ -51,6 +52,7 @@ export const AndroidPhoneView: React.FC<AndroidPhoneViewProps> = ({
   isPaired,
   isRecordingSession,
   onToggleSessionRecording,
+  onOpenInstallGuide,
 }) => {
   const [isPressingFace, setIsPressingFace] = useState(false);
   const [touchGaze, setTouchGaze] = useState<{ x: number; y: number } | null>(null);
@@ -232,8 +234,21 @@ export const AndroidPhoneView: React.FC<AndroidPhoneViewProps> = ({
               </div>
             </div>
 
-            <div className="pt-2 border-t border-white/10 text-[10px] text-white/50">
-              Double-tap Bluey to wake him or put him to sleep. Press & hold to speak!
+            <div className="pt-2 border-t border-white/10 space-y-2">
+              {onOpenInstallGuide && (
+                <button
+                  onClick={() => {
+                    setShowQuickSettings(false);
+                    onOpenInstallGuide();
+                  }}
+                  className="w-full py-1.5 px-3 rounded-lg bg-[#6C86F5]/20 hover:bg-[#6C86F5]/30 text-[#A9BCFF] text-[11px] font-semibold text-center transition flex items-center justify-center gap-1.5"
+                >
+                  <span>📖 View Installation Guide</span>
+                </button>
+              )}
+              <div className="text-[10px] text-white/50 text-center">
+                Double-tap Bluey to wake him or put him to sleep. Press & hold to speak!
+              </div>
             </div>
           </div>
         )}

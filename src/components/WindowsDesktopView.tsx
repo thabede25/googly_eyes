@@ -17,7 +17,8 @@ import {
   HardDrive,
   Copy,
   ExternalLink,
-  HelpCircle
+  HelpCircle,
+  BookOpen
 } from 'lucide-react';
 import { playChirp } from '../utils/audio';
 
@@ -40,6 +41,7 @@ interface WindowsDesktopViewProps {
   onPointAtSpot: (x: number, y: number, label: string) => void;
   phonePlacement: 'left' | 'center' | 'right';
   setPhonePlacement: (p: 'left' | 'center' | 'right') => void;
+  onOpenInstallGuide?: () => void;
 }
 
 export const WindowsDesktopView: React.FC<WindowsDesktopViewProps> = ({
@@ -61,6 +63,7 @@ export const WindowsDesktopView: React.FC<WindowsDesktopViewProps> = ({
   onPointAtSpot,
   phonePlacement,
   setPhonePlacement,
+  onOpenInstallGuide,
 }) => {
   const [showTrayMenu, setShowTrayMenu] = useState(false);
   const [showStartMenu, setShowStartMenu] = useState(false);
@@ -168,6 +171,18 @@ export const WindowsDesktopView: React.FC<WindowsDesktopViewProps> = ({
             </div>
             <span className="text-[11px] text-white/90 mt-1 drop-shadow leading-tight">Edge Vision</span>
           </div>
+
+          {onOpenInstallGuide && (
+            <div
+              onClick={onOpenInstallGuide}
+              className="flex flex-col items-center p-2 rounded-lg hover:bg-white/10 cursor-pointer transition text-center group"
+            >
+              <div className="w-10 h-10 rounded-lg bg-purple-500/20 border border-purple-400/40 flex items-center justify-center text-purple-300 shadow-sm group-hover:scale-105 transition">
+                <BookOpen className="w-5 h-5" />
+              </div>
+              <span className="text-[11px] text-white/90 mt-1 drop-shadow leading-tight">Setup Guide</span>
+            </div>
+          )}
         </div>
 
         {/* Floating Windows App: Meeting Notes / Document Window */}

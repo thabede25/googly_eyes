@@ -1,0 +1,24 @@
+{
+  "name": "Bluey - Googly Eyes Desktop & Phone Companion",
+  "short_name": "Bluey",
+  "description": "A blueberry character who lives under your screen and points at things with his own cursor, answers questions, and records meeting notes.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0c0a13",
+  "theme_color": "#171520",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "/icon-192.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
