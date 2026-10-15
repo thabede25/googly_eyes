@@ -47,6 +47,28 @@ export function App() {
   const [isGuardrailsOpen, setIsGuardrailsOpen] = useState<boolean>(false);
   const [isInstallGuideOpen, setIsInstallGuideOpen] = useState<boolean>(false);
   const [isRecordingSession, setIsRecordingSession] = useState<boolean>(false);
+  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+
+  React.useEffect(() => {
+    const handler = (e: Event) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+    };
+    window.addEventListener('beforeinstallprompt', handler);
+    return () => window.removeEventListener('beforeinstallprompt', handler);
+  }, []);
+
+  const handleInstallPwa = async () => {
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      const choice = await deferredPrompt.userChoice;
+      if (choice?.outcome === 'accepted') {
+        setDeferredPrompt(null);
+      }
+    } else {
+      setIsInstallGuideOpen(true);
+    }
+  };
 
   // Mock sessions
   const [sessions, setSessions] = useState<MeetingSession[]>([
@@ -387,6 +409,7 @@ export function App() {
       <InstallGuideModal
         isOpen={isInstallGuideOpen}
         onClose={() => setIsInstallGuideOpen(false)}
+        onInstallPwa={handleInstallPwa}
       />
     </div>
   );

@@ -11,17 +11,26 @@ import {
   Layers,
   ArrowRight,
   ExternalLink,
-  BookOpen
+  BookOpen,
+  FileCode,
+  ShieldCheck,
+  Zap,
+  Info
 } from 'lucide-react';
 import { playChirp } from '../utils/audio';
 
 interface InstallGuideModalProps {
   isOpen: boolean;
   onClose: () => void;
+  onInstallPwa?: () => void;
 }
 
-export const InstallGuideModal: React.FC<InstallGuideModalProps> = ({ isOpen, onClose }) => {
-  const [tab, setTab] = useState<'quick' | 'windows' | 'android' | 'hotkeys'>('quick');
+export const InstallGuideModal: React.FC<InstallGuideModalProps> = ({
+  isOpen,
+  onClose,
+  onInstallPwa,
+}) => {
+  const [tab, setTab] = useState<'downloads' | 'quick' | 'windows' | 'android' | 'hotkeys'>('downloads');
   const [copiedCmd, setCopiedCmd] = useState<string | null>(null);
 
   if (!isOpen) return null;
@@ -34,7 +43,7 @@ export const InstallGuideModal: React.FC<InstallGuideModalProps> = ({ isOpen, on
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-in fade-in duration-200">
       <div className="relative w-full max-w-3xl max-h-[90vh] bg-[#1a1727] border border-white/15 rounded-3xl shadow-2xl flex flex-col overflow-hidden text-white">
         
         {/* Header */}
@@ -44,8 +53,8 @@ export const InstallGuideModal: React.FC<InstallGuideModalProps> = ({ isOpen, on
               🫐
             </div>
             <div>
-              <h2 className="font-fredoka text-xl text-white">Installation & Setup Guide</h2>
-              <p className="text-xs text-white/50">Run Bluey on Windows, Android, and the Web</p>
+              <h2 className="font-fredoka text-xl text-white">Installation & Download Center</h2>
+              <p className="text-xs text-white/50">Run Bluey on Windows, Android, and Web</p>
             </div>
           </div>
           <button
@@ -59,12 +68,22 @@ export const InstallGuideModal: React.FC<InstallGuideModalProps> = ({ isOpen, on
         {/* Navigation Tabs */}
         <div className="flex items-center gap-1 p-2 bg-[#171424] border-b border-white/10 text-xs overflow-x-auto">
           <button
+            onClick={() => setTab('downloads')}
+            className={`px-3.5 py-2 rounded-xl font-medium transition flex items-center gap-1.5 shrink-0 ${
+              tab === 'downloads' ? 'bg-[#4254D6] text-white shadow' : 'text-white/60 hover:text-white'
+            }`}
+          >
+            <Download className="w-3.5 h-3.5 text-amber-300" />
+            Direct Downloads & 1-Click
+          </button>
+
+          <button
             onClick={() => setTab('quick')}
             className={`px-3.5 py-2 rounded-xl font-medium transition flex items-center gap-1.5 shrink-0 ${
               tab === 'quick' ? 'bg-[#4254D6] text-white shadow' : 'text-white/60 hover:text-white'
             }`}
           >
-            <Sparkles className="w-3.5 h-3.5 text-amber-300" />
+            <Zap className="w-3.5 h-3.5 text-[#5BE49B]" />
             Quick Start (1 Min)
           </button>
 
@@ -101,7 +120,165 @@ export const InstallGuideModal: React.FC<InstallGuideModalProps> = ({ isOpen, on
 
         {/* Tab Body */}
         <div className="flex-1 overflow-y-auto p-6 space-y-6 text-sm">
-          {/* Quick Start */}
+          
+          {/* Direct Downloads Tab */}
+          {tab === 'downloads' && (
+            <div className="space-y-5">
+              <div className="p-4 rounded-2xl bg-gradient-to-r from-[#2B2F8F]/40 to-[#6C86F5]/20 border border-[#6C86F5]/30">
+                <h3 className="font-fredoka text-lg text-[#A9BCFF] mb-1">
+                  1-Click Ready Launchers & Installers
+                </h3>
+                <p className="text-xs text-white/70 leading-relaxed">
+                  Download the Windows desktop launcher or install the Android WebAPK immediately without manual compiling.
+                </p>
+              </div>
+
+              {/* Download Cards Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                
+                {/* Windows 1-Click Desktop Launcher Card */}
+                <div className="p-5 rounded-2xl bg-white/5 border border-white/10 flex flex-col justify-between space-y-4 hover:border-[#6C86F5]/40 transition group">
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <div className="w-10 h-10 rounded-xl bg-blue-500/20 border border-blue-400/40 flex items-center justify-center text-blue-300">
+                        <Monitor className="w-5 h-5" />
+                      </div>
+                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-300 font-plex-mono">
+                        Windows 10 / 11
+                      </span>
+                    </div>
+                    <h4 className="font-fredoka text-base text-white group-hover:text-[#A9BCFF] transition">
+                      Windows Desktop Launcher (.bat)
+                    </h4>
+                    <p className="text-xs text-white/60 leading-relaxed">
+                      Launches Bluey in a clean, standalone desktop window with no browser address bars, identical to a native executable!
+                    </p>
+                  </div>
+
+                  <a
+                    href="/Bluey-Windows-Setup.bat"
+                    download="Bluey-Windows-Setup.bat"
+                    onClick={() => playChirp('chirp')}
+                    className="w-full py-2.5 px-4 rounded-xl bg-[#4254D6] hover:bg-[#3444b5] text-white font-semibold text-xs flex items-center justify-center gap-2 shadow-lg transition"
+                  >
+                    <Download className="w-4 h-4" />
+                    <span>Download Windows Launcher</span>
+                  </a>
+                </div>
+
+                {/* Android WebAPK Card */}
+                <div className="p-5 rounded-2xl bg-white/5 border border-white/10 flex flex-col justify-between space-y-4 hover:border-emerald-500/40 transition group">
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <div className="w-10 h-10 rounded-xl bg-emerald-500/20 border border-emerald-400/40 flex items-center justify-center text-emerald-300">
+                        <Smartphone className="w-5 h-5" />
+                      </div>
+                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-plex-mono">
+                        Android 8.0+
+                      </span>
+                    </div>
+                    <h4 className="font-fredoka text-base text-white group-hover:text-[#5BE49B] transition">
+                      Android App (WebAPK 1-Tap)
+                    </h4>
+                    <p className="text-xs text-white/60 leading-relaxed">
+                      Installs a digitally signed app into your Android App Drawer with custom icon, fullscreen mode, and mic permissions.
+                    </p>
+                  </div>
+
+                  <button
+                    onClick={() => {
+                      playChirp('chirp');
+                      if (onInstallPwa) {
+                        onInstallPwa();
+                      } else {
+                        setTab('android');
+                      }
+                    }}
+                    className="w-full py-2.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs flex items-center justify-center gap-2 shadow-lg transition"
+                  >
+                    <Download className="w-4 h-4" />
+                    <span>Install on Android Phone</span>
+                  </button>
+                </div>
+
+                {/* Windows Desktop Shortcut Creator Card */}
+                <div className="p-5 rounded-2xl bg-white/5 border border-white/10 flex flex-col justify-between space-y-4 hover:border-purple-500/40 transition group">
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <div className="w-10 h-10 rounded-xl bg-purple-500/20 border border-purple-400/40 flex items-center justify-center text-purple-300">
+                        <FileCode className="w-5 h-5" />
+                      </div>
+                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-300 font-plex-mono">
+                        PowerShell Script
+                      </span>
+                    </div>
+                    <h4 className="font-fredoka text-base text-white group-hover:text-purple-300 transition">
+                      Create Desktop Shortcut (.ps1)
+                    </h4>
+                    <p className="text-xs text-white/60 leading-relaxed">
+                      Creates a native <code className="text-purple-300">Bluey.lnk</code> shortcut on your Windows desktop with custom icon.
+                    </p>
+                  </div>
+
+                  <a
+                    href="/Create-Desktop-Shortcut.ps1"
+                    download="Create-Desktop-Shortcut.ps1"
+                    onClick={() => playChirp('chirp')}
+                    className="w-full py-2.5 px-4 rounded-xl bg-white/10 hover:bg-white/20 text-white font-semibold text-xs flex items-center justify-center gap-2 border border-white/10 transition"
+                  >
+                    <Download className="w-4 h-4" />
+                    <span>Download Shortcut Creator</span>
+                  </a>
+                </div>
+
+                {/* Local Dev Starter Card */}
+                <div className="p-5 rounded-2xl bg-white/5 border border-white/10 flex flex-col justify-between space-y-4 hover:border-amber-500/40 transition group">
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <div className="w-10 h-10 rounded-xl bg-amber-500/20 border border-amber-400/40 flex items-center justify-center text-amber-300">
+                        <Terminal className="w-5 h-5" />
+                      </div>
+                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 font-plex-mono">
+                        Source Code
+                      </span>
+                    </div>
+                    <h4 className="font-fredoka text-base text-white group-hover:text-amber-300 transition">
+                      Local Offline Server (.bat)
+                    </h4>
+                    <p className="text-xs text-white/60 leading-relaxed">
+                      Runs the local Node server and opens in your browser with offline audio synthesis.
+                    </p>
+                  </div>
+
+                  <a
+                    href="/start-windows.bat"
+                    download="start-windows.bat"
+                    onClick={() => playChirp('chirp')}
+                    className="w-full py-2.5 px-4 rounded-xl bg-white/10 hover:bg-white/20 text-white font-semibold text-xs flex items-center justify-center gap-2 border border-white/10 transition"
+                  >
+                    <Download className="w-4 h-4" />
+                    <span>Download start-windows.bat</span>
+                  </a>
+                </div>
+
+              </div>
+
+              {/* Informational Callout */}
+              <div className="p-4 rounded-2xl bg-[#12101e] border border-white/10 flex items-start gap-3 text-xs text-white/70">
+                <Info className="w-4 h-4 text-[#A9BCFF] shrink-0 mt-0.5" />
+                <div className="space-y-1">
+                  <span className="font-semibold text-white">How WebAPK and Desktop PWA work:</span>
+                  <p className="leading-relaxed text-white/60">
+                    Unlike raw unsigned <code className="text-[#A9BCFF]">.exe</code> or sideloaded <code className="text-[#A9BCFF]">.apk</code> files which trigger security warnings, 
+                    Chrome on Android automatically generates and signs an official <strong>WebAPK</strong> registered in your device's app drawer. On Windows, 
+                    the launcher runs in standalone app mode without browser toolbars.
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Quick Start Tab */}
           {tab === 'quick' && (
             <div className="space-y-4">
               <div className="p-4 rounded-2xl bg-gradient-to-r from-[#2B2F8F]/40 to-[#6C86F5]/20 border border-[#6C86F5]/30">
@@ -137,7 +314,7 @@ export const InstallGuideModal: React.FC<InstallGuideModalProps> = ({ isOpen, on
                   <div className="flex items-center justify-between">
                     <span className="font-semibold text-white text-xs flex items-center gap-2">
                       <span className="w-5 h-5 rounded-full bg-[#6C86F5] text-white flex items-center justify-center text-[11px] font-bold">2</span>
-                      Double Click or Run Development Server
+                      Run Development Server
                     </span>
                   </div>
                   <div className="text-xs text-white/60 mb-1">
@@ -178,7 +355,7 @@ export const InstallGuideModal: React.FC<InstallGuideModalProps> = ({ isOpen, on
             </div>
           )}
 
-          {/* Windows Setup */}
+          {/* Windows Setup Tab */}
           {tab === 'windows' && (
             <div className="space-y-4">
               <div className="p-4 rounded-2xl bg-[#131d36]/60 border border-[#6C86F5]/30">
@@ -218,7 +395,7 @@ export const InstallGuideModal: React.FC<InstallGuideModalProps> = ({ isOpen, on
             </div>
           )}
 
-          {/* Android Setup */}
+          {/* Android Setup Tab */}
           {tab === 'android' && (
             <div className="space-y-4">
               <div className="p-4 rounded-2xl bg-[#162722]/60 border border-emerald-500/30">
@@ -262,7 +439,7 @@ export const InstallGuideModal: React.FC<InstallGuideModalProps> = ({ isOpen, on
             </div>
           )}
 
-          {/* Hotkeys */}
+          {/* Hotkeys Tab */}
           {tab === 'hotkeys' && (
             <div className="space-y-4">
               <div className="p-4 rounded-2xl bg-white/5 border border-white/10">
@@ -318,6 +495,7 @@ export const InstallGuideModal: React.FC<InstallGuideModalProps> = ({ isOpen, on
               </div>
             </div>
           )}
+
         </div>
 
         {/* Footer */}
@@ -327,7 +505,7 @@ export const InstallGuideModal: React.FC<InstallGuideModalProps> = ({ isOpen, on
             onClick={onClose}
             className="px-5 py-2 rounded-xl bg-[#4254D6] hover:bg-[#3444b5] text-white font-semibold transition"
           >
-            Got It
+            Done
           </button>
         </div>
 
